@@ -4,7 +4,9 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:sons_rodrigo_faro/app/core_module/components/widgets/audio_player_bottom_widget.dart';
+import 'package:sons_rodrigo_faro/app/core_module/constants/constants.dart';
 import 'package:sons_rodrigo_faro/app/modules/home/submodules/lista_audios/presenter/mobx/audio_store.dart';
 import 'package:sons_rodrigo_faro/app/modules/home/submodules/lista_audios/presenter/mobx/states/audio_states.dart';
 import 'package:sons_rodrigo_faro/app/modules/home/submodules/meus_audios/mobx/meus_audios_store.dart';
@@ -30,35 +32,35 @@ class _HomePageState extends State<HomePage>
       Tween<Offset>(begin: const Offset(1, 0), end: const Offset(0, 0))
           .animate(_animationController);
 
-  // late BannerAd myBanner;
+  late BannerAd myBanner;
   bool isAdLoaded = false;
 
-  // initBannerAd() async {
-  //   myBanner = BannerAd(
-  //     adUnitId: bannerID,
-  //     size: AdSize.banner,
-  //     request: const AdRequest(),
-  //     listener: BannerAdListener(
-  //       onAdLoaded: (ad) {
-  //         setState(() {
-  //           isAdLoaded = true;
-  //         });
-  //       },
-  //       onAdFailedToLoad: (ad, error) {
-  //         ad.dispose();
-  //       },
-  //     ),
-  //   );
+  initBannerAd() async {
+    myBanner = BannerAd(
+      adUnitId: bannerID,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            isAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
 
-  //   await myBanner.load();
-  // }
+    await myBanner.load();
+  }
 
   @override
   void initState() {
     super.initState();
 
     if (!Platform.isWindows) {
-      // initBannerAd();
+      initBannerAd();
     }
 
     Modular.to.pushNamed('./lista/');
@@ -105,11 +107,11 @@ class _HomePageState extends State<HomePage>
           }),
           if (!Platform.isWindows) ...[
             isAdLoaded
-                ? const SizedBox(
-                    // height: myBanner.size.height.toDouble(),
-                    // width: myBanner.size.width.toDouble(),
-                    // child: AdWidget(ad: myBanner),
-                    )
+                ? SizedBox(
+                    height: myBanner.size.height.toDouble(),
+                    width: myBanner.size.width.toDouble(),
+                    child: AdWidget(ad: myBanner),
+                  )
                 : const SizedBox(),
             const SizedBox(height: 10),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:sons_rodrigo_faro/app/app_module.dart';
@@ -10,7 +11,7 @@ Future<void> main() async {
 
   await initializeDateFormatting(await findSystemLocale(), '');
 
-  // MobileAds.instance.initialize();
+  MobileAds.instance.initialize();
 
   // RequestConfiguration requestConfiguration =
   //     RequestConfiguration(testDeviceIds: ['5A8A6813409CA346303353BFA4188750']);

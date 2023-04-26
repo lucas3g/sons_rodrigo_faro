@@ -7,9 +7,11 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sons_rodrigo_faro/app/core_module/constants/constants.dart';
 import 'package:sons_rodrigo_faro/app/core_module/services/sqflite/adapters/sqflite_adapter.dart';
 import 'package:sons_rodrigo_faro/app/core_module/services/sqflite/adapters/tables.dart';
 import 'package:sons_rodrigo_faro/app/core_module/services/sqflite/sqflite_storage_interface.dart';
@@ -29,7 +31,7 @@ abstract class _AudioStoreBase with Store {
     required this.audioPlayer,
     required this.db,
   }) {
-    //_createInterstitialAd();
+    _createInterstitialAd();
   }
 
   @observable
@@ -50,58 +52,58 @@ abstract class _AudioStoreBase with Store {
     _state = state;
   }
 
-  // InterstitialAd? _interstitialAd;
-  final int _numInterstitialLoadAttempts = 0;
+  InterstitialAd? _interstitialAd;
+  int _numInterstitialLoadAttempts = 0;
 
-  // void _createInterstitialAd() {
-  //   InterstitialAd.load(
-  //       adUnitId: intersticialID,
-  //       request: const AdRequest(),
-  //       adLoadCallback: InterstitialAdLoadCallback(
-  //         onAdLoaded: (InterstitialAd ad) {
-  //           _interstitialAd = ad;
-  //           _numInterstitialLoadAttempts = 0;
-  //           _interstitialAd!.setImmersiveMode(true);
-  //         },
-  //         onAdFailedToLoad: (LoadAdError error) {
-  //           _numInterstitialLoadAttempts += 1;
-  //           _interstitialAd = null;
-  //           if (_numInterstitialLoadAttempts < 3) {
-  //             _createInterstitialAd();
-  //           }
-  //         },
-  //       ));
-  // }
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: intersticialID,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            _interstitialAd = ad;
+            _numInterstitialLoadAttempts = 0;
+            _interstitialAd!.setImmersiveMode(true);
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            _numInterstitialLoadAttempts += 1;
+            _interstitialAd = null;
+            if (_numInterstitialLoadAttempts < 3) {
+              _createInterstitialAd();
+            }
+          },
+        ));
+  }
 
-  // void _showInterstitialAd(Audio audio) {
-  //   if (_interstitialAd == null) {
-  //     return;
-  //   }
+  void _showInterstitialAd(Audio audio) {
+    if (_interstitialAd == null) {
+      return;
+    }
 
-  //   _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-  //     onAdDismissedFullScreenContent: (InterstitialAd ad) {
-  //       ad.dispose();
-  //       _createInterstitialAd();
+    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        ad.dispose();
+        _createInterstitialAd();
 
-  //       emit(PlayAudioState());
-  //       audioPlay = audio.filePath;
-  //       if (audioPlay.contains('audios')) {
-  //         audioPlayer.play(AssetSource(audio.filePath));
-  //       } else {
-  //         audioPlayer.play(DeviceFileSource(audio.filePath));
-  //       }
-  //       audioPlayer.onPlayerComplete.listen((event) {
-  //         emit(FinishAudioState());
-  //       });
-  //     },
-  //     onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-  //       ad.dispose();
-  //       _createInterstitialAd();
-  //     },
-  //   );
-  //   _interstitialAd!.show();
-  //   _interstitialAd = null;
-  // }
+        emit(PlayAudioState());
+        audioPlay = audio.filePath;
+        if (audioPlay.contains('audios')) {
+          audioPlayer.play(AssetSource(audio.filePath));
+        } else {
+          audioPlayer.play(DeviceFileSource(audio.filePath));
+        }
+        audioPlayer.onPlayerComplete.listen((event) {
+          emit(FinishAudioState());
+        });
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        ad.dispose();
+        _createInterstitialAd();
+      },
+    );
+    _interstitialAd!.show();
+    _interstitialAd = null;
+  }
 
   @action
   Future<void> playAudio(Audio audio) async {
@@ -110,21 +112,21 @@ abstract class _AudioStoreBase with Store {
       audioPlayer.setPlaybackRate(1.0);
 
       if (audioPlay != audio.filePath) {
-        // if (!Platform.isWindows) {
-        //   if (contador == 2) {
-        //     if (state is PlayAudioState) {
-        //       audioPlayer.stop();
-        //       emit(StopAudioState());
-        //     }
+        if (!Platform.isWindows) {
+          if (contador == 2) {
+            if (state is PlayAudioState) {
+              audioPlayer.stop();
+              emit(StopAudioState());
+            }
 
-        //     //_showInterstitialAd(audio);
+            _showInterstitialAd(audio);
 
-        //     contador = 0;
-        //     return;
-        //   } else {
-        //     contador++;
-        //   }
-        // }
+            contador = 0;
+            return;
+          } else {
+            contador++;
+          }
+        }
 
         emit(PlayAudioState());
         audioPlay = audio.filePath;

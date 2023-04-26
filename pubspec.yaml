@@ -57,7 +57,7 @@ dependencies:
   bot_toast: ^4.0.3
   uuid: ^3.0.6
   line_icons: ^2.0.1
-  #google_mobile_ads: ^2.3.0
+  google_mobile_ads: ^2.3.0
 
 
 dev_dependencies:

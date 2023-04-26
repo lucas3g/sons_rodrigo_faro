@@ -1,13 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.maktub.sonsvaidanamoro">
 
+   <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
    <uses-permission android:name="android.permission.INTERNET"/>
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" /> 
    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/> 
 
    <application
-        android:label="Vai dar namoro - Rodrigo Faro"
+        android:label="Sons Vai dar namoro Rodrigo Faro"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
@@ -37,8 +38,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
         
-        <!-- <meta-data
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1898798427054986~2823562127"/> -->
+            android:value="ca-app-pub-1898798427054986~2823562127"/>
     </application>
 </manifest>

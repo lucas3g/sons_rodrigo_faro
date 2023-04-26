@@ -3,8 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sons_rodrigo_faro/app/modules/home/submodules/lista_audios/domain/entities/audio.dart';
 
-const bannerID = 'ca-app-pub-1898798427054986/3785290002';
-const intersticialID = 'ca-app-pub-1898798427054986/7968981556';
+const bannerID = 'ca-app-pub-1898798427054986/8664455823';
+const intersticialID = 'ca-app-pub-1898798427054986/8094390437';
 
 Color randomColor() {
   final colors = [
